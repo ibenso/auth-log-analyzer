@@ -1,0 +1,25 @@
+---Authentication Log Analysis Report---
+
+Failed login attempts per IP:
+45.12.33.98: 3
+91.224.15.18: 1
+103.99.12.8: 4
+182.33.55.19: 2
+167.248.133.11: 3
+
+Invalid user attempts:
+admin: 3
+oracle: 4
+support: 3
+
+Night-time activity (00–05):
+Jan 12 03:42:10 server sshd[2211]: Failed password for invalid user admin from 45.12.33.98 port 44221 ssh2
+Jan 12 03:42:11 server sshd[2211]: Failed password for invalid user admin from 45.12.33.98 port 44221 ssh2
+Jan 12 03:42:12 server sshd[2211]: Failed password for invalid user admin from 45.12.33.98 port 44221 ssh2
+
+Successful logins:
+2025-01-12 07:55:12 - User 'iben' logged in from 84.215.122.9
+2025-01-12 09:15:44 - User 'iben' logged in from 84.215.122.9
+2025-01-12 12:10:09 - User 'test' logged in from 91.224.15.18
+2025-01-12 19:10:14 - User 'iben' logged in from 84.215.122.9
+
