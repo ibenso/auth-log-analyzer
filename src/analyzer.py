@@ -36,5 +36,5 @@ def main():
     for ip, count in failed_per_ip.items():
         print(f"{ip}: {count}")
 
-    if __name__ == "__main__":
-        main()
+if __name__ == "__main__":
+    main()
