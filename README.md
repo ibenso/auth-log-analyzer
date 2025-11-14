@@ -10,6 +10,7 @@ The analyzer detects suspicious activity such as brute-force attempts, invalid u
 - Generate a clean report
 
 ## Project structure
+```
 auth-log-analyzer/
 │
 ├── src/
@@ -22,6 +23,7 @@ auth-log-analyzer/
 │ └── report.txt # Generated report
 │
 └── README.md
+```
 
 ## Usage
 python3 src/analyzer.py sample_logs/auth.log
