@@ -10,12 +10,13 @@ def extract_timestamp(line):
     
     timestamp_str = match.group(1)
 
-    datetime = datetime.strptime("2025" + timestamp_str, "%Y %b %d %H:%M:%S")
-    return datetime, datetime.hour
+    dt = datetime.strptime("2025 " + timestamp_str, "%Y %b %d %H:%M:%S")
+    return dt, dt.hour
 
 def parse_log(file):
     failed_per_ip = defaultdict(int)
     invalid_users = defaultdict(int)
+    night_activity = []
 
     try:
         with open(file, "r") as file:
@@ -38,8 +39,12 @@ def parse_log(file):
             if invalid_match:
                 user = invalid_match.group(1)
                 invalid_users[user] += 1
+
+            dt, hour = extract_timestamp(line)
+            if hour is not None and hour < 6:
+                night_activity.append(line)
             
-    return failed_per_ip, invalid_users
+    return failed_per_ip, invalid_users, night_activity
 
 def main():
     if len(sys.argv) < 2:
@@ -47,7 +52,7 @@ def main():
         sys.exit(1)
 
     log_file = sys.argv[1]
-    failed_per_ip, invalid_users = parse_log(log_file)
+    failed_per_ip, invalid_users, night_activity = parse_log(log_file)
 
     print("Failed login attempts per IP:")
     for ip, count in failed_per_ip.items():
@@ -56,6 +61,10 @@ def main():
     print("\nInvalid user attempts:")
     for user, count in invalid_users.items():
         print(f"{user}: {count}")
+
+    print("\nNight-time activity (00–05):")
+    for entry in night_activity:
+        print(entry)
 
 if __name__ == "__main__":
     main()
