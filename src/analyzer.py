@@ -62,6 +62,32 @@ def parse_log(file):
             
     return failed_per_ip, invalid_users, night_activity, successful_logins
 
+def generate_report(output_path, failed_per_ip, invalid_users, night_activity, succesful_logins):
+    with open(output_path, "w") as report:
+        report.write("---Authentication Log Analysis Report---\n\n")
+        
+        report.write("Failed login attempts per IP:\n")
+        for ip, count in failed_per_ip.items():
+            report.write(f"{ip}: {count}\n")
+        report.write("\n")
+        
+        report.write("Invalid user attempts:\n")
+        for user, count in invalid_users.items():
+            report.write(f"{user}: {count}\n")
+        report.write("\n")
+
+        report.write("Night-time activity (00–05):\n")
+        for entry in night_activity:
+            report.write(f"{entry}\n")
+        report.write("\n")
+
+        report.write("Successful logins:\n")
+        for entry in succesful_logins:
+            ts = entry["timestamp"].strftime("%Y-%m-%d %H:%M:%S")
+            user = entry["user"]
+            ip = entry["ip"]
+            report.write(f"{ts} - User '{user}' logged in from {ip}\n")
+        report.write("\n")
 
 def main():
     if len(sys.argv) < 2:
@@ -88,6 +114,8 @@ def main():
         ts = entry["timestamp"].strftime("%Y-%m-%d %H:%M:%S")
         print(f"{ts} - User '{entry['user']}' logged in from {entry['ip']}")
 
+    output_file = "results/report.txt"
+    generate_report(output_file, failed_per_ip, invalid_users, night_activity, successful_logins)
 
 if __name__ == "__main__":
     main()
