@@ -4,6 +4,7 @@ from collections import defaultdict
 
 def parse_log(file):
     failed_per_ip = defaultdict(int)
+    invalid_users = defaultdict(int)
 
     try:
         with open(file, "r") as file:
@@ -16,12 +17,18 @@ def parse_log(file):
         line = line.strip()
 
         if "Failed password" in line:
+
             ip_match = re.search(r"from ([0-9.]+)", line)
             if ip_match:
                 ip = ip_match.group(1)
                 failed_per_ip[ip] += 1
+
+            invalid_match = re.search(r"Failed password for invalid user (\w+)", line)
+            if invalid_match:
+                user = invalid_match.group(1)
+                invalid_users[user] += 1
             
-    return failed_per_ip
+    return failed_per_ip, invalid_users
 
 def main():
     if len(sys.argv) < 2:
@@ -29,11 +36,15 @@ def main():
         sys.exit(1)
 
     log_file = sys.argv[1]
-    failed_per_ip = parse_log(log_file)
+    failed_per_ip, invalid_users = parse_log(log_file)
 
     print("Failed login attempts per IP:")
     for ip, count in failed_per_ip.items():
         print(f"{ip}: {count}")
+
+    print("\nInvalid user attempts:")
+    for user, count in invalid_users.items():
+        print(f"{user}: {count}")
 
 if __name__ == "__main__":
     main()
