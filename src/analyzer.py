@@ -1,6 +1,17 @@
 import sys
 import re
 from collections import defaultdict
+from datetime import datetime
+
+def extract_timestamp(line):
+    match = re.match(r"([A-Z][a-z]{2}\s+\d+\s+\d+:\d+:\d+)", line)
+    if not match:
+        return None, None
+    
+    timestamp_str = match.group(1)
+
+    datetime = datetime.strptime("2025" + timestamp_str, "%Y %b %d %H:%M:%S")
+    return datetime, datetime.hour
 
 def parse_log(file):
     failed_per_ip = defaultdict(int)
