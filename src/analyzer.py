@@ -17,6 +17,7 @@ def parse_log(file):
     failed_per_ip = defaultdict(int)
     invalid_users = defaultdict(int)
     night_activity = []
+    successful_logins = []
 
     try:
         with open(file, "r") as file:
@@ -43,8 +44,24 @@ def parse_log(file):
             dt, hour = extract_timestamp(line)
             if hour is not None and hour < 6:
                 night_activity.append(line)
+
+        if "Accepted password" in line:
+            user_match = re.search(r"Accepted password for (\w+)", line)
+            ip_match = re.search(r"from ([0-9.]+)", line)
+            dt, hour = extract_timestamp(line)
+
+            if user_match and ip_match:
+                user = user_match.group(1)
+                ip = ip_match.group(1)
+
+                successful_logins.append({
+                    "timestamp": dt,
+                    "user": user,
+                    "ip": ip
+                })
             
-    return failed_per_ip, invalid_users, night_activity
+    return failed_per_ip, invalid_users, night_activity, successful_logins
+
 
 def main():
     if len(sys.argv) < 2:
@@ -52,7 +69,7 @@ def main():
         sys.exit(1)
 
     log_file = sys.argv[1]
-    failed_per_ip, invalid_users, night_activity = parse_log(log_file)
+    failed_per_ip, invalid_users, night_activity, successful_logins = parse_log(log_file)
 
     print("Failed login attempts per IP:")
     for ip, count in failed_per_ip.items():
@@ -65,6 +82,12 @@ def main():
     print("\nNight-time activity (00–05):")
     for entry in night_activity:
         print(entry)
+
+    print("\nSuccessful logins:")
+    for entry in successful_logins:
+        ts = entry["timestamp"].strftime("%Y-%m-%d %H:%M:%S")
+        print(f"{ts} - User '{entry['user']}' logged in from {entry['ip']}")
+
 
 if __name__ == "__main__":
     main()
