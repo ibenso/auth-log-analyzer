@@ -8,7 +8,6 @@ def parse_log(file):
     try:
         with open(file, "r") as file:
             lines = file.readlines()
-        return lines
     except FileNotFoundError:
         print(f"Error: File {file} not found.")
         sys.exit(1)
